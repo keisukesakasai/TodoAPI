@@ -3,6 +3,7 @@ package models
 import (
 	"log"
 	"time"
+	"todoapi/app/utils"
 
 	"github.com/gin-gonic/gin"
 )
@@ -15,8 +16,7 @@ type Todo struct {
 }
 
 func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : CreateTodo")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : CreateTodo")
 
 	cmd := `insert into todos (
 		content, 
@@ -32,8 +32,7 @@ func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
 }
 
 func GetTodo(c *gin.Context, todo_id string) (todo Todo, err error) {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : GetTodo")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : GetTodo")
 
 	cmd := `select id, content, user_id, created_at from todos
 	where id = $1`
@@ -49,8 +48,7 @@ func GetTodo(c *gin.Context, todo_id string) (todo Todo, err error) {
 }
 
 func GetTodos(c *gin.Context) (todos []Todo, err error) {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : GetTodos")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : GetTodos")
 
 	cmd := `select id, content, user_id, created_at from todos`
 	rows, err := Db.Query(cmd)
@@ -74,8 +72,7 @@ func GetTodos(c *gin.Context) (todos []Todo, err error) {
 }
 
 func GetTodosByUser(c *gin.Context, user_id string) (todos []Todo, err error) {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : GetTodosByUser")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : GetTodosByUser")
 
 	cmd := `select id, content, user_id, created_at from todos
 	where user_id = $1`
@@ -102,8 +99,7 @@ func GetTodosByUser(c *gin.Context, user_id string) (todos []Todo, err error) {
 }
 
 func UpdateTodo(c *gin.Context, content string, user_id string, todo_id string) error {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : UpdateTodo")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : UpdateTodo")
 
 	cmd := `update todos set content = $1, user_id = $2 
 	where id = $3`
@@ -115,8 +111,7 @@ func UpdateTodo(c *gin.Context, content string, user_id string, todo_id string) 
 }
 
 func DeleteTodo(c *gin.Context, todo_id string) error {
-	_, span := tracer.Start(c.Request.Context(), "CRUD : DeleteTodo")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "CRUD : DeleteTodo")
 
 	cmd := `delete from todos where id = $1`
 	_, err = Db.Exec(cmd, todo_id)

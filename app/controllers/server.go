@@ -5,12 +5,18 @@ import (
 	"log"
 	"os"
 	"os/signal"
+	"todoapi/config"
 
 	"github.com/gin-gonic/gin"
 	"go.opentelemetry.io/contrib/instrumentation/github.com/gin-gonic/gin/otelgin"
 )
 
+var deployEnv = config.Config.Deploy
+var serverPort = config.Config.Port
+
 func StartMainServer() {
+	log.Println("info: Start Server" + "port: " + serverPort)
+
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
 	defer stop()
 

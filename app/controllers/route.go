@@ -4,36 +4,13 @@ import (
 	"log"
 	"net/http"
 	"todoapi/app/models"
+	"todoapi/app/utils"
 
 	"github.com/gin-gonic/gin"
 )
 
-type createTodoRequest struct {
-	Content string `json:"content"`
-	User_Id string `json:"user_id"`
-}
-
-type getTodosByUserRequest struct {
-	User_Id string `json:"user_id"`
-}
-
-type getTodoRequest struct {
-	Todo_Id string `json:"todo_id"`
-}
-
-type updateTodoRequest struct {
-	Content string `json:"content"`
-	User_Id string `json:"user_id"`
-	Todo_Id string `json:"todo_id"`
-}
-
-type deleteTodoRequest struct {
-	Todo_Id string `json:"todo_id`
-}
-
 func createTodo(c *gin.Context) {
-	_, span := tracer.Start(c.Request.Context(), "TODO 登録")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "TODO登録")
 
 	var createTodorequest createTodoRequest
 	if err := c.BindJSON(&createTodorequest); err != nil {
@@ -41,15 +18,13 @@ func createTodo(c *gin.Context) {
 		return
 	}
 
-	log.Println("---createTodo---")
-	log.Println(createTodorequest)
-
 	content := createTodorequest.Content
 	user_id := createTodorequest.User_Id
 	if err := models.CreateTodo(c, content, user_id); err != nil {
 		log.Println(err)
 	}
-	log.Println("TODO 登録")
+
+	utils.LoggerAndCreateSpan(c, "TODO登録完了")
 
 	c.JSON(http.StatusOK, gin.H{
 		"content": content,
@@ -57,6 +32,7 @@ func createTodo(c *gin.Context) {
 }
 
 func updateTodo(c *gin.Context) {
+	utils.LoggerAndCreateSpan(c, "")
 	_, span := tracer.Start(c.Request.Context(), "TODO 更新")
 	defer span.End()
 
@@ -72,7 +48,7 @@ func updateTodo(c *gin.Context) {
 	if err := models.UpdateTodo(c, content, user_id, todo_id); err != nil {
 		log.Println(err)
 	}
-	log.Println("TODO 登録")
+	utils.LoggerAndCreateSpan(c, "TODO登録完了")
 
 	c.JSON(http.StatusOK, gin.H{
 		"content": content,
@@ -84,8 +60,7 @@ func getTodos(c *gin.Context) {
 }
 
 func getTodo(c *gin.Context) {
-	_, span := tracer.Start(c.Request.Context(), "TODO 参照")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "TODO参照")
 
 	var getTodorequest getTodoRequest
 	if err := c.BindJSON(&getTodorequest); err != nil {
@@ -93,16 +68,12 @@ func getTodo(c *gin.Context) {
 		return
 	}
 
-	log.Println(getTodorequest)
 	todo_id := getTodorequest.Todo_Id
-
 	todo, err := models.GetTodo(c, todo_id)
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("TODO 参照")
-
-	log.Println(todo)
+	utils.LoggerAndCreateSpan(c, "TODO参照完了")
 
 	c.JSON(http.StatusOK, gin.H{
 		"ID":        todo.ID,
@@ -113,8 +84,7 @@ func getTodo(c *gin.Context) {
 }
 
 func deleteTodo(c *gin.Context) {
-	_, span := tracer.Start(c.Request.Context(), "TODO 削除")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "TODO削除")
 
 	var deleteTodorequest deleteTodoRequest
 	if err := c.BindJSON(&deleteTodorequest); err != nil {
@@ -122,14 +92,12 @@ func deleteTodo(c *gin.Context) {
 		return
 	}
 
-	log.Println(deleteTodorequest)
 	todo_id := deleteTodorequest.Todo_Id
-
 	todo, err := models.GetTodo(c, todo_id)
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("TODO 参照")
+	utils.LoggerAndCreateSpan(c, "TODO参照完了")
 
 	if todo.ID == 0 {
 		c.JSON(http.StatusOK, gin.H{
@@ -147,8 +115,7 @@ func deleteTodo(c *gin.Context) {
 }
 
 func getTodosByUser(c *gin.Context) {
-	_, span := tracer.Start(c.Request.Context(), "ユーザごとの TODO 参照")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "ユーザごとのTODO参照")
 
 	var getTodosByUserrequest getTodosByUserRequest
 	if err := c.BindJSON(&getTodosByUserrequest); err != nil {
@@ -156,16 +123,12 @@ func getTodosByUser(c *gin.Context) {
 		return
 	}
 
-	log.Println(getTodosByUserrequest)
 	user_id := getTodosByUserrequest.User_Id
-
 	todos, err := models.GetTodosByUser(c, user_id)
 	if err != nil {
 		log.Println(err)
 	}
-	log.Println("ユーザごとの TODO 参照")
-
-	log.Println(todos)
+	utils.LoggerAndCreateSpan(c, "ユーザごとのTODO参照完了")
 
 	c.JSON(http.StatusOK, gin.H{
 		"todos": todos,

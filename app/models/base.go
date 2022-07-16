@@ -6,8 +6,6 @@ import (
 	"log"
 	"todoapi/config"
 
-	"go.opentelemetry.io/otel"
-
 	_ "github.com/lib/pq"
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -16,7 +14,6 @@ var Db *sql.DB
 var err error
 var dbName = config.Config.DbName
 var deployEnv = config.Config.Deploy
-var tracer = otel.Tracer("TodoAPI-models")
 
 func init() {
 
