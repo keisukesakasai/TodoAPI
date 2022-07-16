@@ -18,7 +18,7 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
-var tracer = otel.Tracer("TodoAPI-controllers")
+// var tracer = otel.Tracer("TodoAPI-controllers")
 
 func initProvider() (func(context.Context) error, error) {
 	ctx := context.Background()

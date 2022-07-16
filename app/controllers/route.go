@@ -32,9 +32,7 @@ func createTodo(c *gin.Context) {
 }
 
 func updateTodo(c *gin.Context) {
-	utils.LoggerAndCreateSpan(c, "")
-	_, span := tracer.Start(c.Request.Context(), "TODO 更新")
-	defer span.End()
+	utils.LoggerAndCreateSpan(c, "TODO更新")
 
 	var updateTodorequest updateTodoRequest
 	if err := c.BindJSON(&updateTodorequest); err != nil {
