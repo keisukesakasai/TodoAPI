@@ -16,7 +16,7 @@ type Todo struct {
 }
 
 func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
-	utils.LoggerAndCreateSpan(c, "CRUD : CreateTodo")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : CreateTodo").End()
 
 	cmd := `insert into todos (
 		content, 
@@ -32,7 +32,7 @@ func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
 }
 
 func GetTodo(c *gin.Context, todo_id string) (todo Todo, err error) {
-	utils.LoggerAndCreateSpan(c, "CRUD : GetTodo")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : GetTodo").End()
 
 	cmd := `select id, content, user_id, created_at from todos
 	where id = $1`
@@ -48,7 +48,7 @@ func GetTodo(c *gin.Context, todo_id string) (todo Todo, err error) {
 }
 
 func GetTodos(c *gin.Context) (todos []Todo, err error) {
-	utils.LoggerAndCreateSpan(c, "CRUD : GetTodos")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : GetTodos").End()
 
 	cmd := `select id, content, user_id, created_at from todos`
 	rows, err := Db.Query(cmd)
@@ -72,7 +72,7 @@ func GetTodos(c *gin.Context) (todos []Todo, err error) {
 }
 
 func GetTodosByUser(c *gin.Context, user_id string) (todos []Todo, err error) {
-	utils.LoggerAndCreateSpan(c, "CRUD : GetTodosByUser")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : GetTodosByUser").End()
 
 	cmd := `select id, content, user_id, created_at from todos
 	where user_id = $1`
@@ -99,7 +99,7 @@ func GetTodosByUser(c *gin.Context, user_id string) (todos []Todo, err error) {
 }
 
 func UpdateTodo(c *gin.Context, content string, user_id string, todo_id string) error {
-	utils.LoggerAndCreateSpan(c, "CRUD : UpdateTodo")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : UpdateTodo").End()
 
 	cmd := `update todos set content = $1, user_id = $2 
 	where id = $3`
@@ -111,7 +111,7 @@ func UpdateTodo(c *gin.Context, content string, user_id string, todo_id string) 
 }
 
 func DeleteTodo(c *gin.Context, todo_id string) error {
-	utils.LoggerAndCreateSpan(c, "CRUD : DeleteTodo")
+	defer utils.LoggerAndCreateSpan(c, "CRUD : DeleteTodo").End()
 
 	cmd := `delete from todos where id = $1`
 	_, err = Db.Exec(cmd, todo_id)
