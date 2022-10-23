@@ -19,11 +19,17 @@ func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
 	defer utils.LoggerAndCreateSpan(c, "CRUD : CreateTodo").End()
 
 	cmd := `insert into todos (
-		content, 
-		user_id, 
-		created_at) values ($1, $2, $3)`
+				content,
+				user_id,
+				created_at) values ($1, $2, $3)`
 
 	_, err = Db.Exec(cmd, content, user_id, time.Now())
+
+	/*
+		defer utils.LoggerAndCreateSpan(c, "[修了発表デモ動画用] 疑似エラー発生中！！！！").End()
+		log.Fatalln("[Fatal] 故障発生 !!!!")
+	*/
+
 	if err != nil {
 		log.Fatalln(err)
 	}

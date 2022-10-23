@@ -103,7 +103,3 @@ func newResource() *resource.Resource {
 	)
 }
 
-func IdOtel2Xray(OtelId string) string {
-	xrayId := "1-" + OtelId[0:8] + "-" + OtelId[8:]
-	return xrayId
-}
