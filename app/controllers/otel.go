@@ -54,7 +54,7 @@ func initProvider() (func(context.Context) error, error) {
 	}
 
 	if deployEnv == "prod" {
-		conn, err := grpc.DialContext(ctx, "otel-collector-collector.observability.svc.cluster.local:4318", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+		conn, err := grpc.DialContext(ctx, "opentelemetry-collector-collector.opentelemetry.svc.cluster.local:4318", grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 		if err != nil {
 			return nil, fmt.Errorf("failed to create gRPC connection to collector: %w", err)
 		}
@@ -102,4 +102,3 @@ func newResource() *resource.Resource {
 		semconv.AWSLogGroupNamesKey.StringSlice(LogGroupNames[:]),
 	)
 }
-

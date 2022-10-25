@@ -25,10 +25,7 @@ func CreateTodo(c *gin.Context, content string, user_id string) (err error) {
 
 	_, err = Db.Exec(cmd, content, user_id, time.Now())
 
-	/*
-		defer utils.LoggerAndCreateSpan(c, "[修了発表デモ動画用] 疑似エラー発生中！！！！").End()
-		log.Fatalln("[Fatal] 故障発生 !!!!")
-	*/
+	defer utils.LoggerErrorAndCreateSpan(c, "【CNDT2022 デモンストレーション】擬似エラー発生中！！！！").End()
 
 	if err != nil {
 		log.Fatalln(err)
@@ -110,6 +107,10 @@ func UpdateTodo(c *gin.Context, content string, user_id string, todo_id string) 
 	cmd := `update todos set content = $1, user_id = $2 
 	where id = $3`
 	_, err = Db.Exec(cmd, content, user_id, todo_id)
+
+	// for CNDT2022
+	// time.Sleep(100 * time.Millisecond)
+
 	if err != nil {
 		log.Fatalln(err)
 	}
